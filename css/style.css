@@ -438,6 +438,36 @@ a  { color: var(--primary-dark); }
   .trust-bar__number { font-size: 26px; }
 }
 
+/* ---------- Insurance & payments ---------- */
+.insurance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.insurance-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 28px 24px; text-align: center;
+  transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+.insurance-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.insurance-card__icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--primary-light); color: var(--primary-dark);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.insurance-card p { color: var(--text-muted); font-size: 15px; margin-bottom: 0; }
+@media (max-width: 1023px) { .insurance-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 479px)  { .insurance-grid { grid-template-columns: 1fr; } }
+
+.payment-methods { display: flex; flex-wrap: wrap; gap: 12px; }
+.payment-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-head); font-weight: 600; font-size: 15px;
+  color: var(--primary-deep); background: var(--surface-alt);
+  border: 1px solid var(--primary-light);
+  padding: 10px 18px; border-radius: 999px;
+}
+
 /* ---------- Testimonial carousel ---------- */
 .testimonial-carousel__track {
   display: flex; gap: 24px;

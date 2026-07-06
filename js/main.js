@@ -72,6 +72,20 @@
       };
       carousel.addEventListener('mouseenter', function () { if (timer) clearInterval(timer); });
       carousel.addEventListener('mouseleave', restart);
+
+      var swipeX = null;
+      carousel.addEventListener('touchstart', function (e) {
+        swipeX = e.changedTouches[0].clientX;
+        if (timer) clearInterval(timer);
+      }, { passive: true });
+      carousel.addEventListener('touchend', function (e) {
+        if (swipeX === null) return;
+        var dx = e.changedTouches[0].clientX - swipeX;
+        if (Math.abs(dx) > 40) show(active + (dx < 0 ? 1 : -1));
+        swipeX = null;
+        restart();
+      }, { passive: true });
+
       show(0);
       restart();
     } else if (slides.length === 1) {
@@ -259,6 +273,12 @@
   /* ---------- Booking form → WhatsApp ---------- */
   var bookingForm = document.getElementById('booking-form');
   if (bookingForm) {
+    var dateInput = bookingForm.querySelector('#b-date');
+    if (dateInput) {
+      var today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+      if (!dateInput.value) dateInput.value = today;
+    }
     bookingForm.addEventListener('submit', function (e) {
       e.preventDefault();
       var v = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
@@ -377,104 +397,4 @@
     });
   }
 
-  /* ---------- Booking form → WhatsApp ---------- */
-  var bookingForm = document.getElementById('booking-form');
-  if (bookingForm) {
-    // Set min date to today
-    var dateInput = bookingForm.querySelector('#b-date');
-    if (dateInput) {
-      var today = new Date().toISOString().split('T')[0];
-      dateInput.setAttribute('min', today);
-      dateInput.value = today;
-    }
-    bookingForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var name = (bookingForm.querySelector('#b-name') || {}).value || '';
-      var phone = (bookingForm.querySelector('#b-phone') || {}).value || '';
-      var doctor = (bookingForm.querySelector('#b-doctor') || {}).value || 'Any available doctor';
-      var date = (bookingForm.querySelector('#b-date') || {}).value || '';
-      var time = (bookingForm.querySelector('#b-time') || {}).value || '';
-      var reason = (bookingForm.querySelector('#b-reason') || {}).value || '';
-      var text = 'Namaste, I want to book an appointment at Sanjeevani Hospital.\n\n' +
-        'Name: ' + name + '\n' +
-        'Phone: ' + phone + '\n' +
-        'Doctor: ' + doctor + '\n' +
-        'Date: ' + date + '\n' +
-        'Time: ' + time + '\n' +
-        (reason ? 'Reason: ' + reason + '\n' : '') +
-        '\nPlease confirm my appointment. Thank you.';
-      window.open('https://wa.me/919010590108?text=' + encodeURIComponent(text), '_blank', 'noopener');
-    });
-  }
-
-  /* ---------- Hero image carousel ---------- */
-  var heroCarousel = document.getElementById('hero-carousel');
-  if (heroCarousel && !reducedMotion) {
-    var track = heroCarousel.querySelector('.hero-carousel__track');
-    var dots = heroCarousel.querySelectorAll('.hero-carousel__dot');
-    var slides = heroCarousel.querySelectorAll('.hero-carousel__slide');
-    var currentSlide = 0;
-    var slideCount = slides.length;
-    var autoInterval = null;
-
-    function goToSlide(i) {
-      currentSlide = ((i % slideCount) + slideCount) % slideCount;
-      track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-      dots.forEach(function (d, idx) {
-        d.classList.toggle('is-active', idx === currentSlide);
-      });
-    }
-
-    function startAuto() {
-      autoInterval = setInterval(function () { goToSlide(currentSlide + 1); }, 4000);
-    }
-    function stopAuto() { clearInterval(autoInterval); }
-
-    dots.forEach(function (dot, idx) {
-      dot.addEventListener('click', function () { stopAuto(); goToSlide(idx); startAuto(); });
-    });
-
-    heroCarousel.addEventListener('mouseenter', stopAuto);
-    heroCarousel.addEventListener('mouseleave', startAuto);
-
-    // Touch swipe
-    var hcTouchX = null;
-    heroCarousel.addEventListener('touchstart', function (e) { hcTouchX = e.changedTouches[0].clientX; stopAuto(); }, { passive: true });
-    heroCarousel.addEventListener('touchend', function (e) {
-      if (hcTouchX === null) return;
-      var dx = e.changedTouches[0].clientX - hcTouchX;
-      if (Math.abs(dx) > 40) goToSlide(currentSlide + (dx < 0 ? 1 : -1));
-      hcTouchX = null;
-      startAuto();
-    }, { passive: true });
-
-    startAuto();
-  }
-
-  /* ---------- Trust-bar animated counters ---------- */
-  var trustNumbers = document.querySelectorAll('.trust-bar__number[data-count]');
-  if (trustNumbers.length && !reducedMotion && 'IntersectionObserver' in window) {
-    var tio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        tio.unobserve(el);
-        var target = parseInt(el.getAttribute('data-count'), 10);
-        var suffix = el.textContent.replace(/[\d,]/g, '');
-        var start = null;
-        var dur = 1200;
-        function step(ts) {
-          if (!start) start = ts;
-          var p = Math.min((ts - start) / dur, 1);
-          var eased = 1 - Math.pow(1 - p, 3);
-          var val = Math.round(target * eased);
-          el.textContent = val.toLocaleString('en-IN') + suffix;
-          if (p < 1) requestAnimationFrame(step);
-          else el.textContent = target.toLocaleString('en-IN') + suffix;
-        }
-        requestAnimationFrame(step);
-      });
-    }, { threshold: 0.5 });
-    trustNumbers.forEach(function (el) { tio.observe(el); });
-  }
 })();
