@@ -1,0 +1,4 @@
+.claude/
+*.log
+test_selenium.py
+get_images_test.py
