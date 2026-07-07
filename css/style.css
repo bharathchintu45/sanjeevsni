@@ -112,6 +112,7 @@ a  { color: var(--primary-dark); }
 .header__inner {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; min-height: 72px;
+  padding: 0 16px;
 }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .brand__mark {
@@ -176,7 +177,7 @@ a  { color: var(--primary-dark); }
 }
 .hero__inner {
   display: grid; grid-template-columns: 1.1fr .9fr; gap: 48px;
-  align-items: center; padding: 72px 0;
+  align-items: center; padding-top: 72px; padding-bottom: 72px;
 }
 .hero h1 { color: #fff; font-size: 44px; margin-bottom: 16px; }
 .hero h1 .telugu { display: block; font-size: 22px; font-weight: 600; opacity: .95; margin-top: 8px; }
@@ -675,7 +676,7 @@ body.lb-open { overflow: hidden; }
   h2 { font-size: 26px; }
 
   .section { padding: 40px 0; }
-  .hero__inner { grid-template-columns: 1fr; gap: 32px; padding: 48px 0 88px; }
+  .hero__inner { grid-template-columns: 1fr; gap: 32px; padding-top: 48px; padding-bottom: 88px; }
   .hero h1 { font-size: 28px; line-height: 1.35; }
   .hero h1 .telugu { font-size: 18px; line-height: 1.45; margin-top: 10px; }
   .grid--3, .grid--2 { grid-template-columns: 1fr; }
